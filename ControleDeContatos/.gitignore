@@ -1,0 +1,32 @@
+﻿## Visual Studio Build Outputs
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+## Visual Studio User Settings
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+## Visual Studio Cache e Ferramentas
+.vs/
+.history/
+*.dbmdl
+*.jfm
+
+## Arquivos de configuração sensíveis (Banco de Dados / Senhas)
+appsettings.Development.json
+.env
+*.env
+
+## Se você usar o SQLite local para testar:
+*.db
+*.sqlite
+
+## Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
