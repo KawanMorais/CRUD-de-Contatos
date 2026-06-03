@@ -19,7 +19,8 @@ x86/
 *.jfm
 
 ## Arquivos de configuração sensíveis (Banco de Dados / Senhas)
-appsettings.Development.json
+**/appsettings.json
+**/appsettings.Development.json
 .env
 *.env
 
