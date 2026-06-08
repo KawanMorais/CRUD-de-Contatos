@@ -1,4 +1,5 @@
 ﻿using ControleDeContatos.Filters;
+using ControleDeContatos.Helper;
 using ControleDeContatos.Models;
 using ControleDeContatos.Repositorio;
 using Microsoft.AspNetCore.Mvc;
@@ -17,17 +18,23 @@ namespace Controle_De_Contatos.Controllers
     public class ContatoController : Controller
     {
         private readonly IContatoRepositorio _contatoRepositorio;
+       
+        private readonly ISessao _sessao;
 
         //O sistema cria uma instância da classe concreta (ContatoRepositorio) que implementa essa interface e a injeta (entrega) como um parâmetro neste construtor.
-        public ContatoController(IContatoRepositorio contatoRepositorio)
+        public ContatoController(IContatoRepositorio contatoRepositorio,
+                                 ISessao sessao)
         {
             //Esta linha pega o objeto recém-entregue (armazenado temporariamente em contatoRepositorio) e o move para o "Armário de Referência" (_contatoRepositorio).
             _contatoRepositorio = contatoRepositorio;
+            _sessao = sessao;
         }
 
         public IActionResult Index()
         {
-            List<ContatoModel> contatos = _contatoRepositorio.BuscarTodos();
+            
+            UsuarioModel usuarioLogado = _sessao.BuscarSessaoDoUsuario();
+            List<ContatoModel> contatos = _contatoRepositorio.BuscarTodos(usuarioLogado.Id);
 
             return View(contatos);
         }
@@ -82,6 +89,10 @@ namespace Controle_De_Contatos.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    //Criar o contato apenas para o usuario logado
+                    UsuarioModel usuarioLogado = _sessao.BuscarSessaoDoUsuario();
+                    contato.UsuarioId = usuarioLogado.Id;
+
                     _contatoRepositorio.Adicionar(contato);
                     TempData["MensagemSucesso"] = "Contato cadastrado com sucesso";
                     return RedirectToAction("Index");
@@ -103,6 +114,9 @@ namespace Controle_De_Contatos.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    UsuarioModel usuarioLogado = _sessao.BuscarSessaoDoUsuario();
+                    contato.UsuarioId = usuarioLogado.Id;
+
                     contato = _contatoRepositorio.Atualizar(contato);
                     TempData["MensagemSucesso"] = "Contato alterado com sucesso";
                     return RedirectToAction("Index");
